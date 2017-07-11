@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 
 const addListBullet = (content, { selectionStart, selectionEnd }) => {
   if (selectionStart !== selectionEnd) {
@@ -129,15 +129,17 @@ const outdentSelection = (content, { selectionStart, selectionEnd }) => {
   return [transformed, delta, delta];
 };
 
-export default class NoteContentEditor extends React.Component {
+export default class NoteContentEditor extends Component {
   static propTypes = {
     content: PropTypes.string.isRequired,
     onChangeContent: PropTypes.func.isRequired,
   };
 
-  state = {
-    content: '',
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = { content: props.content };
+  }
 
   componentWillReceiveProps({ content }) {
     this.setState({ content });
