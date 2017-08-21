@@ -3,10 +3,12 @@ import TagChip from './components/tag-chip';
 import TagInput from './tag-input';
 import classNames from 'classnames';
 import analytics from './analytics';
-import { differenceBy, intersectionBy, invoke, union } from 'lodash';
+import { differenceBy, intersectionBy, invoke, noop, union } from 'lodash';
 
 export default React.createClass({
   propTypes: {
+    storeFocusTagField: PropTypes.func,
+    storeHasFocus: PropTypes.func,
     unusedTags: PropTypes.arrayOf(PropTypes.string),
     usedTags: PropTypes.arrayOf(PropTypes.string),
     onUpdateNoteTags: PropTypes.func.isRequired,
@@ -14,6 +16,8 @@ export default React.createClass({
 
   getDefaultProps: function() {
     return {
+      storeFocusTagField: noop,
+      storeHasFocus: noop,
       tags: [],
     };
   },
@@ -26,6 +30,9 @@ export default React.createClass({
   },
 
   componentDidMount() {
+    this.props.storeFocusTagField(this.focusTagField);
+    this.props.storeHasFocus(this.hasFocus);
+
     document.addEventListener('click', this.unselect, true);
   },
 
@@ -83,6 +90,14 @@ export default React.createClass({
     }
   },
 
+  focusTagField() {
+    this.focusInput && this.focusInput();
+  },
+
+  hasFocus() {
+    return this.inputHasFocus && this.inputHasFocus();
+  },
+
   selectLastTag: function() {
     this.setState({
       selectedTag: this.props.tags.slice(-1).shift(),
@@ -114,6 +129,14 @@ export default React.createClass({
 
     this.selectLastTag();
     e.preventDefault();
+  },
+
+  storeFocusInput(f) {
+    this.focusInput = f;
+  },
+
+  storeHasFocus(f) {
+    this.inputHasFocus = f;
   },
 
   storeHiddenTag(r) {
@@ -175,6 +198,8 @@ export default React.createClass({
             value={tagInput}
             onChange={this.storeTagInput}
             onSelect={this.addTag}
+            storeFocusInput={this.storeFocusInput}
+            storeHasFocus={this.storeHasFocus}
             tagNames={differenceBy(allTags, tags, s => s.toLocaleLowerCase())}
           />
         </div>
