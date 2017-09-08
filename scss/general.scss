@@ -111,9 +111,9 @@ a {
 .navigation-open {
   .note-editor,
   .source-list {
-    opacity: $fade-alpha;
+    /* opacity: $fade-alpha;
     transition: $anim;
-    pointer-events: none;
+    pointer-events: none; */
   }
 }
 
